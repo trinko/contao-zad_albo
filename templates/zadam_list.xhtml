@@ -1,0 +1,62 @@
+
+<!-- indexer::stop -->
+<div class="<?php echo $this->class; ?> block"<?php echo $this->cssID; ?><?php if ($this->style): ?> style="<?php echo $this->style; ?>"<?php endif; ?>>
+<?php if ($this->headline): ?><<?php echo $this->hl; ?>><?php echo $this->headline; ?></<?php echo $this->hl; ?>><?php endif; ?>
+
+<?php if (count($this->categories) > 0): ?>
+
+<h2><?php echo $this->lbl_categorylist; ?></h2>
+<ul class="zadam_categorylist">
+  <?php foreach($this->categories as $item): ?>
+  <li><a href="<?php echo $item['href']; ?>"><?php echo $item['name']; ?></a></li>
+  <?php endforeach; ?>
+</ul>
+
+<?php else: ?>
+
+<h2><?php echo $this->lbl_categoryname; ?></h2>
+<?php if (count($this->docs) > 0): ?>
+<table class="zadam_documentlist" summary="<?php echo $this->lbl_documentlist; ?>">
+<caption><?php echo $this->lbl_documentlist; ?></caption>
+<thead>
+  <tr>
+    <th><?php echo $this->lbl_state; ?></th>
+    <?php if ($this->showRefNumber): ?><th><?php echo $this->lbl_referenceNumber; ?></th><?php endif; ?>
+    <?php if ($this->showRefDate): ?><th><?php echo $this->lbl_referenceDate; ?></th><?php endif; ?>
+    <th><?php echo $this->lbl_subject; ?></th>
+    <th>&nbsp;</th>
+  </tr>
+</thead>
+<tbody>
+<?php foreach ($this->docs as $kitem=>$item): ?>
+  <tr class="row_<?php echo($kitem % 2); ?>">
+    <td><?php echo $item['state']; ?></td>
+    <?php if ($this->showRefNumber): ?><td><?php echo $item['referenceNumber']; ?></td><?php endif; ?>
+    <?php if ($this->showRefDate): ?><td><?php echo $item['referenceDate']; ?></td><?php endif; ?>
+    <td><?php echo $item['subject']; ?></td>
+    <td>
+      <a class="button" href="<?php echo $item['href_show']; ?>" title="<?php echo $this->but_show[1]; ?>"><?php echo $this->but_show[0]; ?></a>
+      <?php if ($item['href_edit']): ?><a class="button" href="<?php echo $item['href_edit']; ?>" title="<?php echo $this->but_edit[1]; ?>"><?php echo $this->but_edit[0]; ?></a><?php endif; ?>
+      <?php if ($item['href_delete']): ?><a class="button" href="<?php echo $item['href_delete']; ?>" title="<?php echo $this->but_delete[1]; ?>"><?php echo $this->but_delete[0]; ?></a><?php endif; ?>
+      <?php if ($item['href_publish']): ?><a class="button" href="<?php echo $item['href_publish']; ?>" title="<?php echo $this->but_publish[1]; ?>"><?php echo $this->but_publish[0]; ?></a><?php endif; ?>
+      <?php if ($item['href_cancel']): ?><a class="button" href="<?php echo $item['href_cancel']; ?>" title="<?php echo $this->but_cancelpub[1]; ?>"><?php echo $this->but_cancelpub[0]; ?></a><?php endif; ?>
+      <?php if ($item['href_uncancel']): ?><a class="button" href="<?php echo $item['href_uncancel']; ?>" title="<?php echo $this->but_uncancelpub[1]; ?>"><?php echo $this->but_uncancelpub[0]; ?></a><?php endif; ?>
+    </td>
+  </tr>
+<?php endforeach; ?>
+</tbody>
+</table>
+<?php else: ?>
+<p><?php echo $this->wrn_nodata; ?></p>
+<?php endif; ?>
+
+<div class="zadam_actions">
+  <a class="button" href="<?php echo $this->href_add; ?>" title="<?php echo $this->but_add[1]; ?>"><?php echo $this->but_add[0]; ?></a></p>
+  <a class="button" href="<?php echo $this->href_catlist; ?>" title="<?php echo $this->but_catlist[1]; ?>"><?php echo $this->but_catlist[0]; ?></a>
+</div>
+<?php echo $this->pagination; ?>
+
+<?php endif; ?>
+
+</div>
+<!-- indexer::continue -->

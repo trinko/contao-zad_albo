@@ -1,0 +1,74 @@
+
+<!-- indexer::stop -->
+<div class="<?php echo $this->class; ?> block"<?php echo $this->cssID; ?><?php if ($this->style): ?> style="<?php echo $this->style; ?>"<?php endif; ?>>
+<?php if ($this->headline): ?><<?php echo $this->hl; ?>><?php echo $this->headline; ?></<?php echo $this->hl; ?>><?php endif; ?>
+
+<h2><?php echo $this->header; ?></h2>
+<form action="<?php echo $this->href_action; ?>" id="zad_albo_confirm" method="post">
+  <input type="hidden" name="FORM_SUBMIT" value="zad_albo_manager_confirm" />
+  <input type="hidden" name="REQUEST_TOKEN" value="{{request_token}}" />
+
+  <table class="zadam_confirm">
+  <tbody>
+    <tr>
+      <td class="zadam_label"><?php echo $this->lbl_subject; ?></td>
+      <td class="zadam_value"><?php echo $this->data['subject']; ?></td>
+    </tr>
+    <?php if ($this->showRefNumber): ?>
+    <tr>
+      <td class="zadam_label"><?php echo $this->lbl_referenceNumber; ?></td>
+      <td class="zadam_value"><?php echo $this->data['referenceNumber']; ?></td>
+    </tr>
+    <?php endif; ?>
+    <?php if ($this->showRefDate): ?>
+    <tr>
+      <td class="zadam_label"><?php echo $this->lbl_referenceDate; ?></td>
+      <td class="zadam_value"><?php echo $this->data['referenceDate']; ?></td>
+    </tr>
+    <?php endif; ?>
+    <?php if (isset($this->data['startDate'])): ?>
+    <tr>
+      <td class="zadam_label"><?php echo $this->lbl_startDate; ?></td>
+      <td class="zadam_value"><?php echo $this->data['startDate']; ?></td>
+    </tr>
+    <?php endif; ?>
+    <?php if (isset($this->data['endDate'])): ?>
+    <tr>
+      <td class="zadam_label"><?php echo $this->lbl_endDate; ?></td>
+      <td class="zadam_value"><?php echo $this->data['endDate']; ?></td>
+    </tr>
+    <?php endif; ?>
+    <?php if (isset($this->data['unpublishDate'])): ?>
+    <tr>
+      <td class="zadam_label"><?php echo $this->lbl_unpublishDate; ?></td>
+      <td class="zadam_value"><?php echo $this->data['unpublishDate']; ?></td>
+    </tr>
+    <?php endif; ?>
+    <tr>
+      <td class="zadam_label"><?php echo $this->lbl_document; ?></td>
+      <td class="zadam_value"><a href="<?php echo $this->data['href_document']; ?>" title="<?php echo $this->data['title_document']; ?>"><?php echo $this->data['document']; ?></a></td>
+    </tr>
+    <?php if (count($this->attach) > 0): ?>
+    <tr>
+      <td class="zadam_label"><?php echo $this->lbl_attach; ?></td>
+      <td class="zadam_value">
+        <?php foreach ($this->attach as $item): ?>
+        <a href="<?php echo $item['href']; ?>" title="<?php echo $item['title']; ?>"><?php echo $item['attach']; ?></a>
+        <?php endforeach; ?>
+      </td>
+    </tr>
+    <?php endif; ?>
+    <tr>
+      <td>&nbsp;</td>
+      <td class="zadam_buttons">
+        <input type="submit" id="ctrl_confirm" name="_confirm" class="zadam_submit" value="<?php echo $this->but_confirm[0]; ?>" title="<?php echo $this->but_confirm[1]; ?>" />
+        <input type="submit" id="ctrl_cancel" name="_cancel" class="zadam_submit" value="<?php echo $this->but_cancel[0]; ?>" title="<?php echo $this->but_cancel[1]; ?>" />
+      </td>
+    </tr>
+  </tbody>
+  </table>
+
+</form>
+
+</div>
+<!-- indexer::continue -->

@@ -1,0 +1,63 @@
+
+<!-- indexer::stop -->
+<div class="<?php echo $this->class; ?> block"<?php echo $this->cssID; ?><?php if ($this->style): ?> style="<?php echo $this->style; ?>"<?php endif; ?>>
+<?php if ($this->headline): ?><<?php echo $this->hl; ?>><?php echo $this->headline; ?></<?php echo $this->hl; ?>><?php endif; ?>
+
+<h2><?php echo $this->header; ?></h2>
+<form action="<?php echo $this->href_action; ?>" id="zad_albo_reader" method="get">
+  <table class="zadar_form">
+    <tr>
+      <td class="zadar_label"><label for="ctrl_field_category"><?php echo $this->lbl_searchcategory; ?></label></td>
+      <td class="zadar_input1">
+        <select class="zadar_select" name="zaC" id="ctrl_field_category">
+          <option value="0"<?php if ($this->category == 0): ?> selected="selected"<?php endif; ?>><?php echo $this->lbl_searchanycategory; ?></option>
+          <?php foreach ($this->categories as $opt): ?>
+          <option value="<?php echo $opt['id']; ?>"<?php if ($this->category == $opt['id']): ?> selected="selected"<?php endif; ?>><?php echo $opt['name']; ?></option>
+          <?php endforeach; ?>
+        </select>
+      </td>
+      <td class="zadar_label"><label for="ctrl_field_subject"><?php echo $this->lbl_searchsubject; ?></label></td>
+      <td class="zadar_input2">
+        <input class="zadar_text" type="text" name="zaS" id="ctrl_field_subject" value="<?php echo $this->subject; ?>" />
+      </td>
+    </tr>
+    <tr>
+      <td colspan="4" class="zadar_buttons">
+        <input type="submit" id="ctrl_search" class="zadar_submit" value="<?php echo $this->but_search; ?>" />
+      </td>
+    </tr>
+  </table>
+</form>
+
+<?php if (count($this->docs) > 0): ?>
+<table class="zadar_documentlist" summary="<?php echo $this->lbl_publishedlist; ?>">
+<thead>
+  <tr>
+    <th><?php echo $this->lbl_number; ?></th>
+    <th><?php echo $this->lbl_subject; ?></th>
+    <th><?php echo $this->lbl_pubdate; ?></th>
+    <?php if ($this->category == 0): ?><th><?php echo $this->lbl_category; ?></th><?php endif; ?>
+  </tr>
+</thead>
+<tbody>
+<?php foreach ($this->docs as $kitem=>$item): ?>
+  <tr class="row_<?php echo($kitem % 2); ?>">
+    <td><?php echo $item['number']; ?></td>
+    <td>
+      <?php if ($item['subject_href'] != ''): ?><a href="<?php echo $item['subject_href']; ?>"><?php echo $item['subject']; ?></a>
+      <?php else: ?><?php echo $item['subject']; ?><br /><strong><?php echo $this->lbl_pubcanceled; ?></strong><?php endif; ?>
+    </td>
+    <td><?php echo $item['pubdate']; ?></td>
+    <?php if ($this->category == 0): ?><td><a href="<?php echo $item['category_href']; ?>"><?php echo $item['category']; ?></a></td><?php endif; ?>
+  </tr>
+<?php endforeach; ?>
+</tbody>
+</table>
+<?php else: ?>
+<p><?php echo $this->wrn_nodata; ?></p>
+<?php endif; ?>
+
+<?php echo $this->pagination; ?>
+
+</div>
+<!-- indexer::continue -->

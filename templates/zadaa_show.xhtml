@@ -1,0 +1,63 @@
+
+<!-- indexer::stop -->
+<div class="<?php echo $this->class; ?> block"<?php echo $this->cssID; ?><?php if ($this->style): ?> style="<?php echo $this->style; ?>"<?php endif; ?>>
+<?php if ($this->headline): ?><<?php echo $this->hl; ?>><?php echo $this->headline; ?></<?php echo $this->hl; ?>><?php endif; ?>
+
+<h2><?php echo $this->header; ?></h2>
+<table class="zadaa_show">
+<tbody>
+  <tr>
+    <td class="zadaa_label"><?php echo $this->lbl_number; ?></td>
+    <td class="zadaa_value"><?php echo $this->data['number']; ?></td>
+  </tr>
+  <tr>
+    <td class="zadaa_label"><?php echo $this->lbl_category; ?></td>
+    <td class="zadaa_value"><?php echo $this->data['category']; ?></td>
+  </tr>
+  <?php if (isset($this->data['referenceNumber'])): ?>
+  <tr>
+    <td class="zadaa_label"><?php echo $this->lbl_referenceNumber; ?></td>
+    <td class="zadaa_value"><?php echo $this->data['referenceNumber']; ?></td>
+  </tr>
+  <?php endif; ?>
+  <?php if (isset($this->data['referenceDate'])): ?>
+  <tr>
+    <td class="zadaa_label"><?php echo $this->lbl_referenceDate; ?></td>
+    <td class="zadaa_value"><?php echo $this->data['referenceDate']; ?></td>
+  </tr>
+  <?php endif; ?>
+  <tr>
+    <td class="zadaa_label"><?php echo $this->lbl_startDate; ?></td>
+    <td class="zadaa_value"><?php echo $this->data['startDate']; ?></td>
+  </tr>
+  <tr>
+    <td class="zadaa_label"><?php echo $this->lbl_endDate; ?></td>
+    <td class="zadaa_value"><?php echo $this->data['endDate']; ?></td>
+  </tr>
+  <tr>
+    <td class="zadaa_label"><?php echo $this->lbl_unpublishDate; ?></td>
+    <td class="zadaa_value"><?php echo $this->data['unpublishDate']; ?></td>
+  </tr>
+  <tr>
+    <td class="zadaa_label"><?php echo $this->lbl_document; ?></td>
+    <td class="zadaa_value"><a href="<?php echo $this->data['href_document']; ?>" title="<?php echo $this->data['title_document']; ?>"><?php echo $this->data['document']; ?></a></td>
+  </tr>
+  <?php if (count($this->attach) > 0): ?>
+  <tr>
+    <td class="zadaa_label"><?php echo $this->lbl_attach; ?></td>
+    <td class="zadaa_value">
+      <?php foreach ($this->attach as $item): ?>
+      <a href="<?php echo $item['href']; ?>" title="<?php echo $item['title']; ?>"><?php echo $item['attach']; ?></a>
+      <?php endforeach; ?>
+    </td>
+  </tr>
+  <?php endif; ?>
+  <tr>
+    <td>&nbsp;</td>
+    <td class="zadaa_buttons"><a class="button" href="javascript:history.back()" title="<?php echo $this->back; ?>"><?php echo $this->back; ?></a></td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+<!-- indexer::continue -->
