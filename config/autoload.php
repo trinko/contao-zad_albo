@@ -5,9 +5,7 @@
  *
  * Copyright (c) 2005-2015 Leo Feyer
  *
- * @package Zad_albo
- * @link    https://contao.org
- * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
+ * @license LGPL-3.0+
  */
 
 
@@ -52,6 +50,7 @@ TemplateLoader::addFiles(array
 	'zadam_edit'    => 'system/modules/zad_albo/templates',
 	'zadam_list'    => 'system/modules/zad_albo/templates',
 	'zadam_message' => 'system/modules/zad_albo/templates',
+	'zadam_publish' => 'system/modules/zad_albo/templates',
 	'zadam_show'    => 'system/modules/zad_albo/templates',
 	'zadar_list'    => 'system/modules/zad_albo/templates',
 	'zadar_message' => 'system/modules/zad_albo/templates',

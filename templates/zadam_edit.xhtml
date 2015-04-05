@@ -6,7 +6,7 @@
 <h2><?php echo $this->header; ?></h2>
 <p class="zadam_description"><span class="zadam_mandatory">*</span> <?php echo $this->description; ?></p>
 <form action="<?php echo $this->href_action; ?>" id="zad_albo_manager_edit" method="post" enctype="multipart/form-data">
-  <input type="hidden" name="FORM_SUBMIT" value="zad_albo_manager_edit" />
+  <input type="hidden" name="FORM_SUBMIT" value="zad_albo_edit" />
   <input type="hidden" name="REQUEST_TOKEN" value="{{request_token}}" />
 
   <table class="zadam_form">
@@ -35,46 +35,6 @@
 <script type="text/javascript">//<![CDATA[
 $(document).ready(function() {
   $('#ctrl_field_referenceDate').Zebra_DatePicker({
-    days: ['<?php echo $this->days; ?>'],
-    format: '<?php echo $this->dateFormat; ?>',
-    lang_clear_date: '<?php echo $this->lbl_clearDate; ?>',
-    months: ['<?php echo $this->months; ?>'],
-    show_select_today: '<?php echo $this->lbl_todayDate; ?>'
-  });
-});
-//]]></script>
-      </td>
-    </tr>
-    <?php endif; ?>
-    <?php if ($this->showEndDate): ?>
-    <tr>
-      <td class="zadam_label"><label for="ctrl_field_endDate"><span class="invisible"><?php echo $this->lbl_mandatory; ?></span><?php echo $this->lbl_endDate; ?><span class="zadam_mandatory">*</span></label></td>
-      <td class="zadam_input<?php if (isset($this->error['endDate'])) echo ' zadam_error'; ?>">
-        <?php if (isset($this->error['endDate'])): ?><p class="zadam_error"><?php echo $this->error['endDate']; ?></p><?php endif; ?>
-        <input type="text" name="field_endDate" id="ctrl_field_endDate" class="zadam_date" value="<?php echo $this->data['endDate']; ?>" />
-<script type="text/javascript">//<![CDATA[
-$(document).ready(function() {
-  $('#ctrl_field_endDate').Zebra_DatePicker({
-    days: ['<?php echo $this->days; ?>'],
-    format: '<?php echo $this->dateFormat; ?>',
-    lang_clear_date: '<?php echo $this->lbl_clearDate; ?>',
-    months: ['<?php echo $this->months; ?>'],
-    show_select_today: '<?php echo $this->lbl_todayDate; ?>'
-  });
-});
-//]]></script>
-      </td>
-    </tr>
-    <?php endif; ?>
-    <?php if ($this->showUnpublishDate): ?>
-    <tr>
-      <td class="zadam_label"><label for="ctrl_field_unpublishDate"><span class="invisible"><?php echo $this->lbl_mandatory; ?></span><?php echo $this->lbl_unpublishDate; ?><span class="zadam_mandatory">*</span></label></td>
-      <td class="zadam_input<?php if (isset($this->error['unpublishDate'])) echo ' zadam_error'; ?>">
-        <?php if (isset($this->error['unpublishDate'])): ?><p class="zadam_error"><?php echo $this->error['unpublishDate']; ?></p><?php endif; ?>
-        <input type="text" name="field_unpublishDate" id="ctrl_field_unpublishDate" class="zadam_date" value="<?php echo $this->data['unpublishDate']; ?>" />
-<script type="text/javascript">//<![CDATA[
-$(document).ready(function() {
-  $('#ctrl_field_unpublishDate').Zebra_DatePicker({
     days: ['<?php echo $this->days; ?>'],
     format: '<?php echo $this->dateFormat; ?>',
     lang_clear_date: '<?php echo $this->lbl_clearDate; ?>',

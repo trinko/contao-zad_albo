@@ -365,16 +365,6 @@ class ModuleZadAlboManager extends \Module {
         $date = new \Date($doc->referenceDate);
         $data['referenceDate'] = $date->date;
       }
-      if ($cat->endDate == 'ed_0') {
-        // format end date
-        $date = new \Date($doc->endDate);
-        $data['endDate'] = $date->date;
-      }
-      if ($cat->unpublishDate == 'ud_0') {
-        // format unpublish date
-        $date = new \Date($doc->unpublishDate);
-        $data['unpublishDate'] = $date->date;
-      }
     } else {
       // add a new document
       $param = array();
@@ -411,8 +401,6 @@ class ModuleZadAlboManager extends \Module {
     $this->Template->acceptedFiles = implode(',', array_map(function($a) { return '.'.$a; }, trimsplit(',', strtolower($this->albo->fileTypes))));
     $this->Template->showRefNumber = $cat->showRefNumber;
     $this->Template->showRefDate = $cat->showRefDate;
-    $this->Template->showEndDate = ($cat->endDate == 'ed_0');
-    $this->Template->showUnpublishDate = ($cat->unpublishDate == 'ud_0');
     $this->Template->dateFormat = \Config::get('dateFormat');
     $this->Template->months = implode('\',\'', $GLOBALS['TL_LANG']['MONTHS']);
     $this->Template->days = implode('\',\'', $GLOBALS['TL_LANG']['DAYS']);
@@ -423,8 +411,6 @@ class ModuleZadAlboManager extends \Module {
     $this->Template->lbl_subject = $GLOBALS['TL_LANG']['tl_zad_albo']['lbl_subject'];
     $this->Template->lbl_referenceNumber = $GLOBALS['TL_LANG']['tl_zad_albo']['lbl_referenceNumber'];
     $this->Template->lbl_referenceDate = $GLOBALS['TL_LANG']['tl_zad_albo']['lbl_referenceDate'];
-    $this->Template->lbl_endDate = $GLOBALS['TL_LANG']['tl_zad_albo']['lbl_endDate'];
-    $this->Template->lbl_unpublishDate = $GLOBALS['TL_LANG']['tl_zad_albo']['lbl_unpublishDate'];
     $this->Template->lbl_clearDate = $GLOBALS['TL_LANG']['tl_zad_albo']['lbl_clearDate'];
     $this->Template->lbl_todayDate = $GLOBALS['TL_LANG']['tl_zad_albo']['lbl_todayDate'];
     $this->Template->lbl_dropzone = $GLOBALS['TL_LANG']['tl_zad_albo']['lbl_dropzone'];
@@ -528,60 +514,6 @@ class ModuleZadAlboManager extends \Module {
         }
       }
     }
-    // end date
-    if ($cat->endDate == 'ed_0') {
-      $data['endDate'] = trim(\Input::post('field_endDate'));
-      if (empty($data['endDate'])) {
-        // no data
-        $error['endDate'] = $GLOBALS['TL_LANG']['tl_zad_albo']['err_mandatory'];
-      } else {
-        // check format
-        try {
-          $date = new \Date($data['endDate'], \Config::get('dateFormat'));
-        } catch (\Exception $e) {
-          // invalid format
-          $date = null;
-        }
-        if (!$date || ($date->date != $data['endDate'])) {
-          // invalid format
-          $error['endDate'] = $GLOBALS['TL_LANG']['tl_zad_albo']['err_dateformat'];
-        } else {
-          // ok, save it as timestamp
-          $data['endDate'] = $date->timestamp;
-          if ($cat->showRefDate && !isset($error['referenceDate']) && $data['referenceDate'] >= $data['endDate']) {
-            // invalid date
-            $error['endDate'] = $GLOBALS['TL_LANG']['tl_zad_albo']['err_enddate'];
-          }
-        }
-      }
-    }
-    // unpublish date
-    if ($cat->unpublishDate == 'ud_0') {
-      $data['unpublishDate'] = trim(\Input::post('field_unpublishDate'));
-      if (empty($data['unpublishDate'])) {
-        // no data
-        $error['unpublishDate'] = $GLOBALS['TL_LANG']['tl_zad_albo']['err_mandatory'];
-      } else {
-        // check format
-        try {
-          $date = new \Date($data['unpublishDate'], \Config::get('dateFormat'));
-        } catch (\Exception $e) {
-          // invalid format
-          $date = null;
-        }
-        if (!$date || ($date->date != $data['unpublishDate'])) {
-          // invalid format
-          $error['unpublishDate'] = $GLOBALS['TL_LANG']['tl_zad_albo']['err_dateformat'];
-        } else {
-          // ok, save it as timestamp
-          $data['unpublishDate'] = $date->timestamp;
-          if (isset($data['endDate']) && !isset($error['endDate']) && $data['endDate'] >= $data['unpublishDate']) {
-            // invalid date
-            $error['unpublishDate'] = $GLOBALS['TL_LANG']['tl_zad_albo']['err_unpublishdate'];
-          }
-        }
-      }
-    }
     // check file document
     if (!isset($_SESSION['zad_albo']['document'])) {
       // no document
@@ -675,21 +607,11 @@ class ModuleZadAlboManager extends \Module {
         $this->Template->href_action = $this->createUrl($param, $this->baseUrl);
         $this->Template->header = sprintf($GLOBALS['TL_LANG']['tl_zad_albo']['lbl_documentadd'], $cat->name);
       }
-      // format dates
+      // format date
       if ($cat->showRefDate && $data['referenceDate'] > 0) {
         // format reference date
         $date = new \Date($data['referenceDate']);
         $data['referenceDate'] = $date->date;
-      }
-      if ($cat->endDate == 'ed_0' && $data['endDate'] > 0) {
-        // format end date
-        $date = new \Date($data['endDate']);
-        $data['endDate'] = $date->date;
-      }
-      if ($cat->unpublishDate == 'ud_0' && $data['unpublishDate'] > 0) {
-        // format unpublish date
-        $date = new \Date($data['unpublishDate']);
-        $data['unpublishDate'] = $date->date;
       }
       // set zebra_datapicker css and javascript
       $GLOBALS['TL_CSS'][] = 'system/modules/zad_albo/vendor/zebra_datepicker-1.8.9/css/default.css';
@@ -713,8 +635,6 @@ class ModuleZadAlboManager extends \Module {
       $this->Template->acceptedFiles = implode(',', array_map(function($a) { return '.'.$a; }, trimsplit(',', strtolower($this->albo->fileTypes))));
       $this->Template->showRefNumber = $cat->showRefNumber;
       $this->Template->showRefDate = $cat->showRefDate;
-      $this->Template->showEndDate = ($cat->endDate == 'ed_0');
-      $this->Template->showUnpublishDate = ($cat->unpublishDate == 'ud_0');
       $this->Template->dateFormat = \Config::get('dateFormat');
       $this->Template->months = implode('\',\'', $GLOBALS['TL_LANG']['MONTHS']);
       $this->Template->days = implode('\',\'', $GLOBALS['TL_LANG']['DAYS']);
@@ -725,8 +645,6 @@ class ModuleZadAlboManager extends \Module {
       $this->Template->lbl_subject = $GLOBALS['TL_LANG']['tl_zad_albo']['lbl_subject'];
       $this->Template->lbl_referenceNumber = $GLOBALS['TL_LANG']['tl_zad_albo']['lbl_referenceNumber'];
       $this->Template->lbl_referenceDate = $GLOBALS['TL_LANG']['tl_zad_albo']['lbl_referenceDate'];
-      $this->Template->lbl_endDate = $GLOBALS['TL_LANG']['tl_zad_albo']['lbl_endDate'];
-      $this->Template->lbl_unpublishDate = $GLOBALS['TL_LANG']['tl_zad_albo']['lbl_unpublishDate'];
       $this->Template->lbl_clearDate = $GLOBALS['TL_LANG']['tl_zad_albo']['lbl_clearDate'];
       $this->Template->lbl_todayDate = $GLOBALS['TL_LANG']['tl_zad_albo']['lbl_todayDate'];
       $this->Template->lbl_dropzone = $GLOBALS['TL_LANG']['tl_zad_albo']['lbl_dropzone'];
@@ -821,19 +739,98 @@ class ModuleZadAlboManager extends \Module {
 	 * @param int $id  ID of the document to publish
 	 */
 	protected function documentPublish($category, $id) {
+    // set template
+    $this->Template = new \FrontendTemplate('zadam_publish');
+    // check category
+    $cat = \ZadAlboCategoryModel::getCategory($this->albo->id, $category);
+    if ($cat === null) {
+      // error, invalid category
+      $this->errorMessage($GLOBALS['TL_LANG']['tl_zad_albo']['err_nocategory']);
+      return;
+    }
+    // get document
+    $doc = \ZadAlboDocumentModel::getDocument($category, $id, $state);
+    if ($doc === null) {
+      // error, invalid document
+      $this->errorMessage($GLOBALS['TL_LANG']['tl_zad_albo']['err_id']);
+      return;
+    }
+    // get data
+    $data = array();
+    $data['subject'] = $doc->subject;
+    if ($cat->showRefNumber) {
+      // set reference number
+      $data['referenceNumber'] = $doc->referenceNumber;
+    }
+    if ($cat->showRefDate) {
+      // format reference date
+      $date = new \Date($doc->referenceDate);
+      $data['referenceDate'] = $date->date;
+    }
+    if ($cat->endDate != 'ed_0') {
+      // set end date
+      $date = new \Date($this->createTimestamp(time(), substr($cat->endDate, 3)));
+      $data['endDate'] = $date->date;
+    }
+    if ($cat->unpublishDate != 'ud_0') {
+      // set unpublish date
+      $date = new \Date($this->createTimestamp(time(), 0, substr($cat->unpublishDate, 3)));
+      $data['unpublishDate'] = $date->date;
+    }
+    // document
+    $param = array();
+    $param['zaA'] = 'download';
+    $param['zaC'] = $category;
+    $param['zaF'] = \String::binToUuid($doc->document);
+    $data['href_document'] = $this->createUrl($param, $this->baseUrl);
+    $data['title_document'] = sprintf($GLOBALS['TL_LANG']['tl_zad_albo']['lbl_filedownload'], $doc->documentName);
+    $data['document'] = $doc->documentName;
+    // attach files
+    $attach = array();
+    if ($cat->enableAttach) {
+      $attaches = unserialize($doc->attach);
+      $attachnames = unserialize($doc->attachNames);
+      foreach ($attaches as $katt=>$att) {
+        $param['zaF'] = \String::binToUuid($att);
+        $href = $this->createUrl($param, $this->baseUrl);
+        $attach[] = array(
+          'href' => $href,
+          'attach' => $attachnames[$katt],
+          'title' => sprintf($GLOBALS['TL_LANG']['tl_zad_albo']['lbl_filedownload'], $attachnames[$katt]));
+      }
+    }
     // set action URL
     $param = array();
     $param['zaA'] = 'publishx';
     $param['zaC'] = $category;
     $param['zaD'] = $id;
     $href_action = $this->createUrl($param, $this->baseUrl);
-    // set header
-    $header = sprintf($GLOBALS['TL_LANG']['tl_zad_albo']['lbl_documentpublish']);
-    // set buttons
-    $but_confirm = $GLOBALS['TL_LANG']['tl_zad_albo']['but_confirm'];
-    $but_cancel = $GLOBALS['TL_LANG']['tl_zad_albo']['but_cancel'];
-    // show confirm form
-    $this->confirm($category, $id, 'DRAFT', $href_action, $header, $but_confirm, $but_cancel);
+    // set zebra_datapicker css and javascript
+    $GLOBALS['TL_CSS'][] = 'system/modules/zad_albo/vendor/zebra_datepicker-1.8.9/css/default.css';
+    $GLOBALS['TL_JAVASCRIPT'][] = 'system/modules/zad_albo/vendor/zebra_datepicker-1.8.9/js/zebra_datepicker.min.js';
+    // set template vars
+    $this->Template->href_action = $href_action;
+    $this->Template->header = $GLOBALS['TL_LANG']['tl_zad_albo']['lbl_documentpublish'];
+    $this->Template->data = $data;
+    $this->Template->attach = $attach;
+    $this->Template->showRefNumber = $cat->showRefNumber;
+    $this->Template->showRefDate = $cat->showRefDate;
+    $this->Template->description = $GLOBALS['TL_LANG']['tl_zad_albo']['lbl_mandatorydesc'];
+    $this->Template->dateFormat = \Config::get('dateFormat');
+    $this->Template->months = implode('\',\'', $GLOBALS['TL_LANG']['MONTHS']);
+    $this->Template->days = implode('\',\'', $GLOBALS['TL_LANG']['DAYS']);
+    $this->Template->lbl_subject = $GLOBALS['TL_LANG']['tl_zad_albo']['lbl_subject'];
+    $this->Template->lbl_referenceNumber = $GLOBALS['TL_LANG']['tl_zad_albo']['lbl_referenceNumber'];
+    $this->Template->lbl_referenceDate = $GLOBALS['TL_LANG']['tl_zad_albo']['lbl_referenceDate'];
+    $this->Template->lbl_endDate = $GLOBALS['TL_LANG']['tl_zad_albo']['lbl_endDate'];
+    $this->Template->lbl_unpublishDate = $GLOBALS['TL_LANG']['tl_zad_albo']['lbl_unpublishDate'];
+    $this->Template->lbl_document = $GLOBALS['TL_LANG']['tl_zad_albo']['lbl_document'];
+    $this->Template->lbl_attach = $GLOBALS['TL_LANG']['tl_zad_albo']['lbl_attach'];
+    $this->Template->lbl_clearDate = $GLOBALS['TL_LANG']['tl_zad_albo']['lbl_clearDate'];
+    $this->Template->lbl_todayDate = $GLOBALS['TL_LANG']['tl_zad_albo']['lbl_todayDate'];
+    $this->Template->lbl_mandatory = $GLOBALS['TL_LANG']['tl_zad_albo']['lbl_mandatory'];
+    $this->Template->but_publish = $GLOBALS['TL_LANG']['tl_zad_albo']['but_publish'];
+    $this->Template->but_cancel = $GLOBALS['TL_LANG']['tl_zad_albo']['but_cancel'];
   }
 
   /**
@@ -857,79 +854,209 @@ class ModuleZadAlboManager extends \Module {
       $this->errorMessage($GLOBALS['TL_LANG']['tl_zad_albo']['err_id']);
       return;
     }
-    if (strlen(\Input::post('_confirm')) == 0) {
+    if (strlen(\Input::post('_publish')) == 0) {
       // redirect to document list
       $param = array();
       $param['zaA'] = 'list';
       $param['zaC'] = $category;
       $this->redirect($this->createUrl($param, $this->baseUrl));
     }
-    // publish the document
-    if ($cat->enablePdf) {
-		  // convert document to PDF
-      $file_pdf = $this->convertToPdf($doc->document);
-      if ($file_pdf === null) {
-        // error, no file
-        $this->errorMessage($GLOBALS['TL_LANG']['tl_zad_albo']['err_nofile']);
-        return;
-      }
-      if ($file_pdf != $doc->document) {
-        // file converted
-        $dot = strrpos($doc->documentName, '.');
-        $doc->documentName = substr($doc->documentName, 0, ($dot === null ? strlen($doc->documentName) : $dot)) . '.pdf';
-      }
-      if ($cat->enableAttach) {
-        $files = unserialize($doc->attach);
-        $filenames = unserialize($doc->attachNames);
-        foreach ($files as $kfile=>$file) {
-          $file_pdf = $this->convertToPdf($file);
-          if ($file_pdf === null) {
-            // error, no file
-            $this->errorMessage($GLOBALS['TL_LANG']['tl_zad_albo']['err_nofile']);
-            return;
-          }
-          $files[$kfile] = $file_pdf;
-          $dot = strrpos($filenames[$kfile], '.');
-          $filenames[$kfile] = substr($filenames[$kfile], 0, ($dot === null ? strlen($filenames[$kfile]) : $dot)) . '.pdf';
-        }
-        $doc->attach = serialize($files);
-        $doc->attachNames = serialize($filenames);
-      }
-    }
-    $doc->tstamp = time();
-    $doc->startDate = $this->createTimestamp($doc->tstamp);
-    if ($cat->endDate != 'ed_0') {
-      // set end date
-      $doc->endDate = $this->createTimestamp($doc->startDate, substr($cat->endDate, 3));
-    }
-    if ($cat->unpublishDate != 'ud_0') {
-      // set unpublish date
-      $doc->unpublishDate = $this->createTimestamp($doc->startDate, 0, substr($cat->unpublishDate, 3));
-    }
-    $doc->state = 'PUBLISHED';
-    $doc->sentBy = $this->userId;
-    // set number
-    $year = date('Y', $doc->tstamp);
-    if ($this->albo->lastNumber == '' || substr($this->albo->lastNumber, -4) != $year) {
-      // first document number for this year
-      $doc->number = '1/' . $year;
+    // check end date
+    $data = array();
+    $error = array();
+    $data['endDate'] = trim(\Input::post('field_endDate'));
+    if (empty($data['endDate'])) {
+      // no data
+      $error['endDate'] = $GLOBALS['TL_LANG']['tl_zad_albo']['err_mandatory'];
     } else {
-      // get next document number for this year
-      $num = explode('/', $this->albo->lastNumber);
-      $doc->number = ($num[0] + 1) . '/' . $year;
+      // check format
+      try {
+        $date = new \Date($data['endDate'], \Config::get('dateFormat'));
+      } catch (\Exception $e) {
+        // invalid format
+        $date = null;
+      }
+      if (!$date || ($date->date != $data['endDate'])) {
+        // invalid format
+        $error['endDate'] = $GLOBALS['TL_LANG']['tl_zad_albo']['err_dateformat'];
+      } else {
+        // ok, save it as timestamp
+        $data['endDate'] = $date->timestamp;
+        if (time() >= $data['endDate']) {
+          // invalid date
+          $error['endDate'] = $GLOBALS['TL_LANG']['tl_zad_albo']['err_enddate'];
+        }
+      }
     }
-    // save document data
-    $doc->save();
-    // update document number
-    $this->albo->lastNumber = $doc->number;
-    $this->albo->save();
-		// add a log entry for published file
-    $this->log(sprintf($GLOBALS['TL_LANG']['tl_zad_albo']['log_published'], $doc->number, $id), __METHOD__, 'ZAD_ALBO');
-    // go to document list
-    $param = array();
-    $param['zaA'] = 'list';
-    $param['zaC'] = $category;
-    $this->redirect($this->createUrl($param, $this->baseUrl));
+    // check unpublish date
+    $data['unpublishDate'] = trim(\Input::post('field_unpublishDate'));
+    if (empty($data['unpublishDate'])) {
+      // no data
+      $error['unpublishDate'] = $GLOBALS['TL_LANG']['tl_zad_albo']['err_mandatory'];
+    } else {
+      // check format
+      try {
+        $date = new \Date($data['unpublishDate'], \Config::get('dateFormat'));
+      } catch (\Exception $e) {
+        // invalid format
+        $date = null;
+      }
+      if (!$date || ($date->date != $data['unpublishDate'])) {
+        // invalid format
+        $error['unpublishDate'] = $GLOBALS['TL_LANG']['tl_zad_albo']['err_dateformat'];
+      } else {
+        // ok, save it as timestamp
+        $data['unpublishDate'] = $date->timestamp;
+        if (isset($data['endDate']) && !isset($error['endDate']) && $data['endDate'] >= $data['unpublishDate']) {
+          // invalid date
+          $error['unpublishDate'] = $GLOBALS['TL_LANG']['tl_zad_albo']['err_unpublishdate'];
+        }
+      }
+    }
+    // save or show errors
+    if (empty($error)) {
+      // no errors, publish document
+      if ($cat->enablePdf) {
+  		  // convert document to PDF
+        $file_pdf = $this->convertToPdf($doc->document);
+        if ($file_pdf === null) {
+          // error, no file
+          $this->errorMessage($GLOBALS['TL_LANG']['tl_zad_albo']['err_nofile']);
+          return;
+        }
+        if ($file_pdf != $doc->document) {
+          // file converted
+          $dot = strrpos($doc->documentName, '.');
+          $doc->documentName = substr($doc->documentName, 0, ($dot === null ? strlen($doc->documentName) : $dot)) . '.pdf';
+        }
+        if ($cat->enableAttach) {
+          $files = unserialize($doc->attach);
+          $filenames = unserialize($doc->attachNames);
+          foreach ($files as $kfile=>$file) {
+            $file_pdf = $this->convertToPdf($file);
+            if ($file_pdf === null) {
+              // error, no file
+              $this->errorMessage($GLOBALS['TL_LANG']['tl_zad_albo']['err_nofile']);
+              return;
+            }
+            $files[$kfile] = $file_pdf;
+            $dot = strrpos($filenames[$kfile], '.');
+            $filenames[$kfile] = substr($filenames[$kfile], 0, ($dot === null ? strlen($filenames[$kfile]) : $dot)) . '.pdf';
+          }
+          $doc->attach = serialize($files);
+          $doc->attachNames = serialize($filenames);
+        }
+      }
+      $doc->tstamp = time();
+      $doc->startDate = $this->createTimestamp($doc->tstamp);
+      $doc->endDate = $data['endDate'];
+      $doc->unpublishDate = $data['unpublishDate'];
+      $doc->state = 'PUBLISHED';
+      $doc->sentBy = $this->userId;
+      // set number
+      $year = date('Y', $doc->tstamp);
+      if ($this->albo->lastNumber == '' || substr($this->albo->lastNumber, -4) != $year) {
+        // first document number for this year
+        $doc->number = '1/' . $year;
+      } else {
+        // get next document number for this year
+        $num = explode('/', $this->albo->lastNumber);
+        $doc->number = ($num[0] + 1) . '/' . $year;
+      }
+      // save document data
+      $doc->save();
+      // update document number
+      $this->albo->lastNumber = $doc->number;
+      $this->albo->save();
+  		// add a log entry for published file
+      $this->log(sprintf($GLOBALS['TL_LANG']['tl_zad_albo']['log_published'], $doc->number, $id), __METHOD__, 'ZAD_ALBO');
+      // go to document list
+      $param = array();
+      $param['zaA'] = 'list';
+      $param['zaC'] = $category;
+      $this->redirect($this->createUrl($param, $this->baseUrl));
+    } else {
+      // show errors
+      $this->Template = new \FrontendTemplate('zadam_publish');
+      // get data
+      $data['subject'] = $doc->subject;
+      if ($cat->showRefNumber) {
+        // set reference number
+        $data['referenceNumber'] = $doc->referenceNumber;
+      }
+      if ($cat->showRefDate) {
+        // format reference date
+        $date = new \Date($doc->referenceDate);
+        $data['referenceDate'] = $date->date;
+      }
+      // format end date
+      if ($data['endDate'] > 0) {
+        // format date
+        $date = new \Date($data['endDate']);
+        $data['endDate'] = $date->date;
+      }
+      // format end date
+      if ($data['unpublishDate'] > 0) {
+        // format date
+        $date = new \Date($data['unpublishDate']);
+        $data['unpublishDate'] = $date->date;
+      }
+      // document
+      $param = array();
+      $param['zaA'] = 'download';
+      $param['zaC'] = $category;
+      $param['zaF'] = \String::binToUuid($doc->document);
+      $data['href_document'] = $this->createUrl($param, $this->baseUrl);
+      $data['title_document'] = sprintf($GLOBALS['TL_LANG']['tl_zad_albo']['lbl_filedownload'], $doc->documentName);
+      $data['document'] = $doc->documentName;
+      // attach files
+      $attach = array();
+      if ($cat->enableAttach) {
+        $attaches = unserialize($doc->attach);
+        $attachnames = unserialize($doc->attachNames);
+        foreach ($attaches as $katt=>$att) {
+          $param['zaF'] = \String::binToUuid($att);
+          $href = $this->createUrl($param, $this->baseUrl);
+          $attach[] = array(
+            'href' => $href,
+            'attach' => $attachnames[$katt],
+            'title' => sprintf($GLOBALS['TL_LANG']['tl_zad_albo']['lbl_filedownload'], $attachnames[$katt]));
+        }
+      }
+      // set action URL
+      $param = array();
+      $param['zaA'] = 'publishx';
+      $param['zaC'] = $category;
+      $param['zaD'] = $id;
+      $href_action = $this->createUrl($param, $this->baseUrl);
+      // set zebra_datapicker css and javascript
+      $GLOBALS['TL_CSS'][] = 'system/modules/zad_albo/vendor/zebra_datepicker-1.8.9/css/default.css';
+      $GLOBALS['TL_JAVASCRIPT'][] = 'system/modules/zad_albo/vendor/zebra_datepicker-1.8.9/js/zebra_datepicker.min.js';
+      // set template vars
+      $this->Template->href_action = $href_action;
+      $this->Template->header = $GLOBALS['TL_LANG']['tl_zad_albo']['lbl_documentpublish'];
+      $this->Template->error = $error;
+      $this->Template->data = $data;
+      $this->Template->attach = $attach;
+      $this->Template->showRefNumber = $cat->showRefNumber;
+      $this->Template->showRefDate = $cat->showRefDate;
+      $this->Template->description = $GLOBALS['TL_LANG']['tl_zad_albo']['lbl_mandatorydesc'];
+      $this->Template->dateFormat = \Config::get('dateFormat');
+      $this->Template->months = implode('\',\'', $GLOBALS['TL_LANG']['MONTHS']);
+      $this->Template->days = implode('\',\'', $GLOBALS['TL_LANG']['DAYS']);
+      $this->Template->lbl_subject = $GLOBALS['TL_LANG']['tl_zad_albo']['lbl_subject'];
+      $this->Template->lbl_referenceNumber = $GLOBALS['TL_LANG']['tl_zad_albo']['lbl_referenceNumber'];
+      $this->Template->lbl_referenceDate = $GLOBALS['TL_LANG']['tl_zad_albo']['lbl_referenceDate'];
+      $this->Template->lbl_endDate = $GLOBALS['TL_LANG']['tl_zad_albo']['lbl_endDate'];
+      $this->Template->lbl_unpublishDate = $GLOBALS['TL_LANG']['tl_zad_albo']['lbl_unpublishDate'];
+      $this->Template->lbl_document = $GLOBALS['TL_LANG']['tl_zad_albo']['lbl_document'];
+      $this->Template->lbl_attach = $GLOBALS['TL_LANG']['tl_zad_albo']['lbl_attach'];
+      $this->Template->lbl_clearDate = $GLOBALS['TL_LANG']['tl_zad_albo']['lbl_clearDate'];
+      $this->Template->lbl_todayDate = $GLOBALS['TL_LANG']['tl_zad_albo']['lbl_todayDate'];
+      $this->Template->lbl_mandatory = $GLOBALS['TL_LANG']['tl_zad_albo']['lbl_mandatory'];
+      $this->Template->but_publish = $GLOBALS['TL_LANG']['tl_zad_albo']['but_publish'];
+      $this->Template->but_cancel = $GLOBALS['TL_LANG']['tl_zad_albo']['but_cancel'];
+    }
   }
 
   /**
@@ -1116,12 +1243,12 @@ class ModuleZadAlboManager extends \Module {
       $date = new \Date($doc->startDate);
       $data['startDate'] = $date->date;
     }
-    if ($cat->endDate == 'ed_0' || $doc->state != 'DRAFT') {
+    if ($doc->state != 'DRAFT') {
       // format end date
       $date = new \Date($doc->endDate);
       $data['endDate'] = $date->date;
     }
-    if ($cat->unpublishDate == 'ud_0' || $doc->state != 'DRAFT') {
+    if ($doc->state != 'DRAFT') {
       // format unpublish date
       $date = new \Date($doc->unpublishDate);
       $data['unpublishDate'] = $date->date;
@@ -1659,12 +1786,12 @@ class ModuleZadAlboManager extends \Module {
       $date = new \Date($doc->startDate);
       $data['startDate'] = $date->date;
     }
-    if ($cat->endDate == 'ed_0' || $doc->state != 'DRAFT') {
+    if ($doc->state != 'DRAFT') {
       // format end date
       $date = new \Date($doc->endDate);
       $data['endDate'] = $date->date;
     }
-    if ($cat->unpublishDate == 'ud_0' || $doc->state != 'DRAFT') {
+    if ($doc->state != 'DRAFT') {
       // format unpublish date
       $date = new \Date($doc->unpublishDate);
       $data['unpublishDate'] = $date->date;
